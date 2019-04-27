@@ -1,0 +1,24 @@
+
+
+
+[  214.057200] i2c-msm-v2 78b9000.i2c: TIMEOUT_ERROR(val:510msec) misconfigured GPIO or slave pulling bus line(s) low
+[  214.057200] : msgs(n:1 cur:0 tx) bc(rx:0 tx:5) mode:FIFO slv_addr:0x40 MSTR_STS:0x08132100 OPER:0x00000090
+[  214.177061] i2c-msm-v2 78b9000.i2c: bus lines held low by a slave detected
+[  214.182916] i2c-msm-v2 78b9000.i2c: Executing bus recovery procedure (9 clk pulse)
+[  214.190694] i2c-msm-v2 78b9000.i2c: BUS ERROR:noisy bus/unexpected start/stop tag: msgs(n:1 cur:0 tx) bc(rx:0 tx:5) mode:FIFO slv_addr:0x40 MSTR_STS:0x081121c4 OPER:0x00000000
+[  214.199654] i2c-msm-v2 78b9000.i2c: Bus recovery success after 1 retries
+[  214.212823] <<GTP-INF>>[gsl_write_interface:286] gsl_write_interface-->err_i2c_transfer,ret=-5
+[  214.212823] 
+[  214.727140] i2c-msm-v2 78b9000.i2c: TIMEOUT_ERROR(val:510msec) misconfigured GPIO or slave pulling bus line(s) low
+[  214.727140] : msgs(n:1 cur:0 tx) bc(rx:0 tx:5) mode:FIFO slv_addr:0x40 MSTR_STS:0x08132100 OPER:0x00000090
+[  214.847063] i2c-msm-v2 78b9000.i2c: bus lines held low by a slave detected
+[  214.852919] i2c-msm-v2 78b9000.i2c: Executing bus recovery procedure (9 clk pulse)
+[  214.860697] i2c-msm-v2 78b9000.i2c: BUS ERROR:noisy bus/unexpected start/stop tag: msgs(n:1 cur:0 tx) bc(rx:0 tx:5) mode:FIFO slv_addr:0x40 MSTR_STS:0x081121c4 OPER:0x00000000
+[  214.869660] i2c-msm-v2 78b9000.i2c: Bus recovery success after 1 retries
+[  214.882820] <<GTP-INF>>[gsl_write_interface:286] gsl_write_interface-->err_i2c_transfer,ret=-5
+[  214.882820] 
+[  215.397143] i2c-msm-v2 78b9000.i2c: TIMEOUT_ERROR(val:510msec) misconfigured GPIO or slave pulling bus line(s) low
+[  215.397143] : msgs(n:1 cur:0 tx) bc(rx:0 tx:5) mode:FIFO slv_addr:0x40 MSTR_STS:0x08132100 OPER:0x00000090
+[  215.517061] i2c-msm-v2 78b9000.i2c: bus lines held low by a slave detected
+[  215.522915] i2c-msm-v2 78b9000.i2c: Executing bus recovery procedure (9 clk pulse)
+[  215.530694] i2c-msm-v2 78b9000.i2c: BUS ERROR:noisy bus/unexpected start/stop tag: msgs(n:1 cur:0 tx) bc(rx:0 tx:5) mode:FIFO slv_a

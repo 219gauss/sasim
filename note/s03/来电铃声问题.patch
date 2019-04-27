@@ -1,0 +1,29 @@
+
+开机来电铃声有声音，但手柄切换一次后来电铃声没声音
+
+frameworks\base\services\core\java\com\android\server\policy\PhoneWindowManager.java
+
+
+telephonyManager.listen(mPhoneStateListener, PhoneStateListener.LISTEN_CALL_STATE);
+
+PhoneStateListener mPhoneStateListener = new PhoneStateListener() {
+        @Override
+        public void onServiceStateChanged(ServiceState serviceState) {
+            super.onServiceStateChanged(serviceState);
+            Log.e(TAG, "CustomPhoneStateListener onServiceStateChanged: " + serviceState);
+        }
+        @Override
+        public void onCallStateChanged(int state, String incomingNumber) {
+            Log.e(TAG, "CustomPhoneStateListener state: "+ state + " incomingNumber: " + incomingNumber);
+            switch (state) {
+                case TelephonyManager.CALL_STATE_IDLE:      // 电话挂断
+                    break;
+                case TelephonyManager.CALL_STATE_RINGING:   // 电话响铃
+                    Log.e(TAG, "CustomPhoneStateListener onCallStateChanged endCall");
+                    mAM.setMode(AudioManager.MODE_RINGTONE);
+                    break;
+                case TelephonyManager.CALL_STATE_OFFHOOK:   // 来电接通 或者 去电，去电接通  但是没法区分
+                    break;
+            }
+        }
+    };

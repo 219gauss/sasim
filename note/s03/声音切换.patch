@@ -1,0 +1,16 @@
+
+在播放音乐的时候声音从喇叭切换到手柄会有3秒的延迟,打电话的时候切换声音没问题
+
+
+if(down){
+         SystemProperties.set("persist.sys.speaker","false");
+         mAM.setMode(AudioManager.MODE_IN_CALL);
+         mAM.setSpeakerphoneOn(false);
+     }else{
+         SystemProperties.set("persist.sys.speaker","true");
+         //mAM.setMode(AudioManager.MODE_NORMAL);     //在播放音乐的时候声音从喇叭切换到手柄会有3秒的延迟
+         mAM.setMode(AudioManager.MODE_IN_CALL);
+         mAM.setSpeakerphoneOn(true);
+     }
+
+

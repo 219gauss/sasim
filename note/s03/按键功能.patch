@@ -1,0 +1,203 @@
+
+s03按键功能
+
+在该文件中添加：
+frameworks\base\services\core\java\com\android\server\policy\PhoneWindowManager.java
+
+
+
+1，热点键（点击按键打开wifi热点，再点击关闭热点）
+
+	private int hotportFlag = 0;
+
+    case KeyEvent.KEYCODE_WIFIAP: {
+        Log.i(TAG, "KEYCODE_WIFIAP is down");
+        if(down && hotportFlag == 0){
+            Log.i(TAG, "WiFi hotport is on");
+            mWifiManager = (WifiManager) mContext.getSystemService(Context.WIFI_SERVICE); //获取wifi服务
+            mWifiConfig = mWifiManager.getWifiApConfiguration();  //获取热点配置
+
+            mWifiManager.setWifiApEnabled(mWifiConfig, true);  //打开热点
+            hotportFlag = 1;
+        }else if (down && hotportFlag == 1) {
+            Log.i(TAG, "WiFi hotport is off");
+            mWifiManager = (WifiManager) mContext.getSystemService(Context.WIFI_SERVICE);
+            mWifiConfig = mWifiManager.getWifiApConfiguration();
+
+            mWifiManager.setWifiApEnabled(mWifiConfig, false); //关闭热点
+            hotportFlag = 0;
+        }
+        break;
+
+    }
+
+2，免提键（拿起手柄通话时，点击按键在放下手柄，声音从手柄切换到喇叭）
+	flag：表示免提键的状态，1表示按下（免提图标被按下），0表示再一次按下（免提图标被抬起）
+
+
+    case KeyEvent.KEYCODE_HANDFREE:
+         Log.e(TAG,"handfree KEYCODE_HANDFREE, flag:"+flag);
+        if(down){
+            if(mTelecomManager.isRinging()) {             //响铃状态按下免提键，接电话
+                Log.e(TAG,"handfree  mTelecomManager.isRinging()");
+                mTelecomManager.acceptRingingCall();
+                    //mAM.setSpeakerphoneOn(true);
+                flag = 1;
+            }else if(mTelecomManager.isInCall()) {       //通话状态按下免提键时，向APP发一个打开喇叭的广播
+                Log.e(TAG,"handfree open_speaker  mTelecomManager.isInCall()");
+                Intent intent = new Intent("com.android.InCall.speaker.turn");
+                intent.putExtra("extra_data", "open_speaker");
+                mContext.sendBroadcast(intent);
+                flag = 1;
+            }
+        }
+        break;
+
+3，重播键（点击按键再次拨打之前的号码）
+
+    case KeyEvent.KEYCODE_DIAL: //（定义可能不一样）
+        if(down){
+            Log.e("pzp","key is down");
+
+            Uri callUri = CallLog.Calls.CONTENT_URI;
+            String[] columns = {CallLog.Calls.CACHED_NAME, // 通话记录的联系人
+                            CallLog.Calls.NUMBER, // 通话记录的电话号码
+                            CallLog.Calls.DATE, // 通话记录的日期
+                            CallLog.Calls.DURATION, // 通话时长
+                            CallLog.Calls.TYPE}; // 通话类型
+            String number = "";
+
+            //获取通话记录
+            ContentResolver resolver = mContext.getContentResolver();
+            Cursor cursor = resolver.query(callUri,columns, null, null, CallLog.Calls.DEFAULT_SORT_ORDER);
+            if(cursor.moveToNext() == true)
+            {
+               number = cursor.getString(cursor.getColumnIndex(CallLog.Calls.NUMBER));
+                Log.e("pzp",number);
+            }
+
+            //拨打电话
+            if (number != null) {
+                Intent intent = new Intent(Intent.ACTION_CALL);
+                Uri data = Uri.parse("tel:" + number);
+                intent.setData(data);
+                mContext.startActivity(intent);
+            }
+        }
+        break;
+
+4，拨号键
+
+	case KeyEvent.KEYCODE_REDIAL:
+	                Log.i(TAG, "KEYCODE_REDIAL is down");
+	                if(down) {
+	                    if (mTelecomManager.isRinging()) {   //响铃状态时点击，接电话
+	                            mTelecomManager.acceptRingingCall();
+
+	                    } else if(mTelecomManager.isInCall()){   //通话转态时，手柄键是按下的，点击，挂断电话
+	                        if(!getHookStatus()) {
+	                            mTelecomManager.endCall();
+	                        }
+	                    } else if(dialer_intface){
+	                            //Intent intent = new Intent("com.android.dialer.dialpad.DialpadFragment.phone.key");
+	                            //mContext.sendBroadcast(intent);
+	                    } else {        //其他情况点击，打开拨号APP
+	                        Intent intent = mContext.getPackageManager().getLaunchIntentForPackage("com.android.dialer");
+	                        mContext.startActivity(intent);   
+
+	                    }
+	                }
+	                break;
+
+5，手柄键
+
+	final boolean down = event.getAction() == KeyEvent.ACTION_DOWN;
+
+	down为1表示按键抬起，0表示按键按下
+
+	case KeyEvent.KEYCODE_HOLD:
+        Log.e(TAG,"hold KEYCODE_HOLD flag="+flag);
+		if(mTelecomManager.isRinging()) {                              //响铃转态抬起按键时，接听电话
+            if(down){
+                Log.e(TAG,"hold isRinging KEYCODE_HOLD down");
+                flag = 0;
+                mTelecomManager.acceptRingingCall();
+                //mAM.setSpeakerphoneOn(false);
+            }
+        } else if(mTelecomManager.isInCall()) {                     //通话状态抬起按键时，关闭喇叭，向APP发一个关闭喇叭的广播
+            if(down){
+                Log.e(TAG,"hold isInCall KEYCODE_HOLD down");
+                flag = 0;
+                mAM.setSpeakerphoneOn(false);
+                Intent intent = new Intent("com.android.InCall.speaker.turn");
+                intent.putExtra("extra_data", "close_speaker");
+                mContext.sendBroadcast(intent);
+            } else {                                               //通话状态没抬起按键
+                if(flag == 1) {										//如果按下免提键，就打开喇叭
+                    mAM.setSpeakerphoneOn(true);
+                } else {
+                    //flag = 0;										//否则挂断电话
+                    mTelecomManager.endCall();
+
+                    if (down) {										//之前调试发现挂断电话之后发现声音切换出错了，特地加了一个判断，如果
+                        mAM.setSpeakerphoneOn(true);
+                    }else{
+                        Intent intent = new Intent("com.android.InCall.speaker.turn");
+                        intent.putExtra("extra_data", "close_speaker");
+                        mContext.sendBroadcast(intent);
+                    }
+                }
+            }
+        } else {
+             if(down){     //其他情况，抬起按键，关闭喇叭
+                 SystemProperties.set("persist.sys.speaker","false");
+                 mAM.setMode(AudioManager.MODE_IN_CALL);
+                 mAM.setSpeakerphoneOn(false);
+             }else{       //按下按键，打开喇叭
+                 SystemProperties.set("persist.sys.speaker","true");
+                 mAM.setMode(AudioManager.MODE_IN_CALL);					//注意：这个地方不能设置MODE_NORMAL，否则打电话时切换声音正常，
+                 mAM.setSpeakerphoneOn(true);								//但是播放音乐时喇叭声音切换到手柄会有3秒左右的延迟
+             }   
+        }
+        break;
+
+6,快捷拨号键
+
+	SASINCOMM_SPEED_DIAL_M1保存设置好的电话号码，
+
+    case KeyEvent.KEYCODE_M1:
+        if(down) {
+            Log.e(TAG, "KEYCODE_M1 is down");
+            if(!mTelecomManager.isRinging() || !mTelecomManager.isInCall()) {      //如果不是在响铃或者通话状态，按下按键拨打设置好的电话号码
+                String telNumStr = Settings.Global.getString(mContext.getContentResolver(), Settings.Global.SASINCOMM_SPEED_DIAL_M1);    
+                Log.e(TAG, "telNumStr : "+telNumStr);
+                if(!telNumStr.equals("sasin0123456789") && telNumStr.length() > 4) {
+                    Intent intent = new Intent(Intent.ACTION_CALL);
+                    intent.setData(Uri.parse("tel:" + telNumStr));//设置数据 直接拨打电话
+                    mContext.startActivity(intent);//开启意图
+                }
+            }
+        }
+        break;
+
+在文件中：frameworks\base\core\java\android\provider\Settings.java
+
+    public static final String SASINCOMM_SPEED_DIAL_M1 = "sasincomm_speed_dial_m1";
+    public static final String SASINCOMM_SPEED_DIAL_M2 = "sasincomm_speed_dial_m2";
+    public static final String SASINCOMM_SPEED_DIAL_M3 = "sasincomm_speed_dial_m3";
+    public static final String SASINCOMM_SPEED_DIAL_M4 = "sasincomm_speed_dial_m4";
+    public static final String SASINCOMM_SPEED_DIAL_M5 = "sasincomm_speed_dial_m5";
+
+
+在文件中：frameworks\base\packages\SettingsProvider\src\com\android\providers\settings\DatabaseHelper.java
+设置快捷拨号的初始值，
+
+
+    loadSetting(stmt, Settings.Global.SASINCOMM_SPEED_DIAL_M1, "sasin0123456789");
+    loadSetting(stmt, Settings.Global.SASINCOMM_SPEED_DIAL_M2, "sasin0123456789");
+    loadSetting(stmt, Settings.Global.SASINCOMM_SPEED_DIAL_M3, "sasin0123456789");
+    loadSetting(stmt, Settings.Global.SASINCOMM_SPEED_DIAL_M4, "sasin0123456789");
+    loadSetting(stmt, Settings.Global.SASINCOMM_SPEED_DIAL_M5, "sasin0123456789");
+
+
+

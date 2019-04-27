@@ -1,0 +1,12 @@
+
+在Z:\phy\sdk\qualcomm\kernel\arch\arm\boot\dts\qcom\msm8909-mtp.dtsi文件中添加如下节点：
+
+#if 1
+&usb_otg {
+       qcom,hsusb-otg-mode = <3>;
+       interrupts = <0 134 0>,<0 140 0>,<0 136 0>;
+       interrupt-names = "core_irq", "async_irq", "phy_irq";
+       vbus_otg-supply = <&pm8909_l5>;
+};
+#endif
+

@@ -1,0 +1,17 @@
+
+添加APP到system中，编译时将制定的APP打包到system.img中
+
+在Z:\phy\sdk\qualcomm\device\qcom\msm8909\msm8909.mk文件中
+
+#ANT+ stack
+PRODUCT_PACKAGES += \
+AntHalService \
+libantradio \
+antradio_app \
++AutoRegistration
+
+
+将要添加的APP名添加到PRODUCT_PACKAGES下
+
+
+

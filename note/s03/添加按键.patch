@@ -1,0 +1,262 @@
+
+矩阵键盘：
+
+驱动位置：（linux内核已经写好了）
+\\192.168.0.107\sxcompany-work\phy\sdk\qualcomm\kernel\drivers\input\keyboard\matrix_keypad.c
+
+=================================================================================================
+配置dts节点：
+
+	matrix_keypad {
+		compatible = "gpio-matrix-keypad";
+		debounce-delay-ms = <5>;
+		col-scan-delay-us = <2>;
+		pinctrl-names = "matrix_keypad_active","matrix_keypad_suspend";
+		pinctrl-0 = <&matrix_keypad_active>;
+		pinctrl-1 = <&matrix_keypad_suspend>;
+
+		row-gpios = <&msm_gpio 65 0      //行gpio口
+			     &msm_gpio 16  0
+			     &msm_gpio 8 0
+			     &msm_gpio 9 0
+			     &msm_gpio 10 0>;
+
+		col-gpios = <&msm_gpio 11 0    //列gpio口
+			     &msm_gpio 95 0
+			     &msm_gpio 36 0
+			     &msm_gpio 58 0
+			     &msm_gpio 110 0>;
+
+		linux,keymap = <0x000001ed          //0x000001ed值=00(行坐标)+00（列坐标）+01ed（键值）
+				0x010001ef
+				0x020001e8
+				0x030001ec
+				0x040001ee
+				0x0001006c
+				0x0101006a
+				0x02010067
+				0x03010069
+				0x0401001c
+				0x0002020b
+				0x0102000a      
+				0x02020007
+				0x03020004
+				0x040201e7
+				0x0003000b
+				0x01030009
+				0x02030006
+				0x03030003
+				0x040301e6
+				0x0004020a
+				0x01040008
+				0x02040005
+				0x03040002
+				0x040401e5>;
+		keypad,num-rows = <5>;
+		keypad,num-columns = <5>;
+	};	
+
+	matrix_keypad_gpio {
+		qcom,pins = <&gp 65>, <&gp 16>, <&gp 8>, <&gp 9>, <&gp 10>,    //gpio口
+					<&gp 11>, <&gp 95>, <&gp 36>, <&gp 58>, <&gp 110>;
+		qcom,num-grp-pins = <10>;
+		qcom,pin-func = <0>;
+		label = "matrix_keypad_gpio";
+		matrix_keypad_active: active {
+			drive-strength = <8>;
+			bias-pull-down;
+		};
+		matrix_keypad_suspend: suspend {
+			drive-strength = <8>;	
+			bias-pull-down;
+		};
+
+==========================================================================================
+
+
+添加手柄键
+
+修改dts文件
+
+	sasin_gpio {
+		compatible = "sasin_gpio";
+		qcom,sasin_gpio92 = <&msm_gpio 92 0>;
+	};
+
+添加驱动：Z:\phy\sdk\qualcomm\kernel\drivers\misc\sasin_gpio.c
+
+设备节点：
+驱动在cat sys/class/sasin_gpios/sasin_gpio92/state
+
+==========================================================================================
+
+编写kl文件
+
+在\\192.168.0.107\sxcompany-work\phy\sdk\qualcomm\device\qcom\msm8909\目录下创建SN7326_key_board.kl文件
+
+
+按照自定义的键值从大到小排列
+注意：其中第二列表示linux内核上报的键值可以参考内核的键值表并自定义键值，第三列表示上层的键值名
+内核键值表：kernel\include\uapi\linux\input.h
+
+key 2     1
+key 3     2
+key 4     3
+key 5     4
+key 6     5
+key 7     6
+key 8     7
+key 9     8
+key 10    9
+key 11    0
+key 28	  ENTER
+key 485   M1
+key 486   M2
+key 487   M3
+key 488   M4
+key 492   DIAL
+key 493	  REDIAL
+key 494   HANDFREE
+key 495  WIFIAP
+key 522	  STAR
+key 523	  POUND
+key 544   DPAD_UP
+key 545  DPAD_DOWN
+key 546  DPAD_LEFT
+key 547  DPAD_RIGHT
+
+
+修改msm8909.mk
+
+\\192.168.0.107\sxcompany-work\phy\sdk\qualcomm\device\qcom\msm8909\msm8909.mk
+添加这行
+
+PRODUCT_COPY_FILES += device/qcom/msm8909/SN7326_key_board.kl:system/usr/keylayout/SN7326_key_board.kl
+
+编译的时候将SN7326_key_board.kl拷贝到system目录下
+
+==========================================================================================
+添加key label
+在Z:\phy\sdk\qualcomm\frameworks\native\include\input\InputEventLabels.h中
+
+将kl文件里的第三列按顺序添加到数组中
+
+#define DEFINE_KEYCODE(key) { #key, AKEYCODE_##key }  ，通过改宏定义为{HOLD,AKEYCODE_HOLD}
+
+diff --git a/include/input/InputEventLabels.h b/include/input/InputEventLabels.h
+old mode 100644
+new mode 100755
+index 0bd14ea..05a449c
+--- a/include/input/InputEventLabels.h
++++ b/include/input/InputEventLabels.h
+@@ -324,6 +324,18 @@ static const InputEventLabel KEYCODES[] = {
+     DEFINE_KEYCODE(SYSTEM_NAVIGATION_LEFT),
+     DEFINE_KEYCODE(SYSTEM_NAVIGATION_RIGHT),
+ 
++    DEFINE_KEYCODE(M1),
++    DEFINE_KEYCODE(M2),
++    DEFINE_KEYCODE(M3),
++    DEFINE_KEYCODE(M4),
++    DEFINE_KEYCODE(M5),
++    DEFINE_KEYCODE(M6),
++    DEFINE_KEYCODE(M7),
++    DEFINE_KEYCODE(DIAL),
++    DEFINE_KEYCODE(REDIAL),
++    DEFINE_KEYCODE(HANDFREE),
++    DEFINE_KEYCODE(WIFIAP),
++    DEFINE_KEYCODE(HOLD),
+     { NULL, 0 }
+ };
+
+==========================================================================================
+在native定义
+路径Z:\phy\sdk\qualcomm\frameworks\native\include\android\keycodes.h
+
+在枚举后面添加你增加的键,并且赋值，这个值是键值在数组中的偏移
+
+diff --git a/include/android/keycodes.h b/include/android/keycodes.h
+old mode 100644
+new mode 100755
+index e202060..d1e61ee
+--- a/include/android/keycodes.h
++++ b/include/android/keycodes.h
+@@ -765,10 +765,22 @@ enum {
+     /** fingerprint navigation key, left. */
+     AKEYCODE_SYSTEM_NAVIGATION_LEFT = 282,
+     /** fingerprint navigation key, right. */
+-    AKEYCODE_SYSTEM_NAVIGATION_RIGHT = 283
++    AKEYCODE_SYSTEM_NAVIGATION_RIGHT = 283,
+ 
+     // NOTE: If you add a new keycode here you must also add it to several other files.
+     //       Refer to frameworks/base/core/java/android/view/KeyEvent.java for the full list.
++    AKEYCODE_M1 = 284,
++    AKEYCODE_M2 = 285,
++    AKEYCODE_M3 = 286,
++    AKEYCODE_M4 = 287,
++    AKEYCODE_M5 = 288,
++    AKEYCODE_M6 = 289,
++    AKEYCODE_M7 = 290,
++    AKEYCODE_DIAL = 291,
++    AKEYCODE_REDIAL = 292,
++    AKEYCODE_HANDFREE = 293,
++    AKEYCODE_WIFIAP = 294,
++    AKEYCODE_HOLD = 295,
+ };
+
+==========================================================================================
+在java中定义
+
+按照文件中的格式定义键值，键值要和native中的数值偏移一致，并修改后面数组的大小
+
+diff --git a/core/java/android/view/KeyEvent.java b/core/java/android/view/KeyEvent.java
+old mode 100644
+new mode 100755
+index b73acda..8041208
+--- a/core/java/android/view/KeyEvent.java
++++ b/core/java/android/view/KeyEvent.java
+@@ -805,7 +805,20 @@ public class KeyEvent extends InputEvent implements Parcelable {
+     /** Key code constant: Consumed by the system for navigation right */
+     public static final int KEYCODE_SYSTEM_NAVIGATION_RIGHT = 283;
+ 
+-    private static final int LAST_KEYCODE = KEYCODE_SYSTEM_NAVIGATION_RIGHT;
++    public static final int KEYCODE_M1 = 284;
++    public static final int KEYCODE_M2 = 285;
++    public static final int KEYCODE_M3 = 286;
++    public static final int KEYCODE_M4 = 287;
++    public static final int KEYCODE_M5 = 288;
++    public static final int KEYCODE_M6 = 289;
++    public static final int KEYCODE_M7 = 290;
++    public static final int KEYCODE_DIAL = 291;
++    public static final int KEYCODE_REDIAL = 292;
++    public static final int KEYCODE_HANDFREE = 293;
++    public static final int KEYCODE_WIFIAP = 294;
++    public static final int KEYCODE_HOLD = 295;
++
++    private static final int LAST_KEYCODE = KEYCODE_HOLD;
+ 
+     // NOTE: If you add a new keycode here you must also add it to:
+     //  isSystem()
+
+============================================================
+
+当修改修改了Generic.kl文件，直接编译会报错
+
+******************************
+You have tried to change the API from what has been previously approved.
+
+To make these errors go away, you have two choices:
+   1) You can add "@hide" javadoc comments to the methods, etc. listed in the
+      errors above.
+
+   2) You can update current.txt by executing the following command:
+         make update-api
+
+      To submit the revised current.txt to the main Android repository,
+      you will need approval.
+******************************
+
+要先make update-api
+
+
+
+

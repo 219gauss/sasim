@@ -1,0 +1,175 @@
+
+======================================================================================
+在device\qcom\common\display\tools路径下，将panel_zs043_270p_video.xml生成dtsi和h文件
+
+生成：panel_zs043_270p_video.h 和 dsi-panel-zs043-270p-video.dtsi 文件
+
+使用命令：
+perl parser.pl panel_zs043_270p_video.xml panel
+
+1）将h文件添加到
+bootable\bootloader\lk\dev\gcdb\display\include路径下
+
+编译lk ： make aboot -j8
+
+2）将xml文件添加到kernel\arch\arm\boot\dts\qcom路径下
+
+编译kernel： make kernel -j8
+
+======================================================================================
+修改dtsi文件
+
+在kernel\arch\arm\boot\dts\qcom路径下，修改msm8909-mtp.dtsi文件
+
+修改该节点：
+
+&mdss_dsi0 {
+	qcom,dsi-pref-prim-pan = <&dsi_zs043_270p_video>;     指定lcm名字
+	pinctrl-names = "mdss_default", "mdss_sleep";
+	pinctrl-0 = <&mdss_dsi_active &mdss_te_active>;
+	pinctrl-1 = <&mdss_dsi_suspend &mdss_te_suspend>;
+	qcom,platform-enable-gpio = <&msm_gpio 32 0>;		屏幕使能脚
+	qcom,platform-reset-gpio = <&msm_gpio 25 0>;		屏幕复位脚
+	qcom,platform-bklight-en-gpio = <&msm_gpio 31 0>;	背光使能脚
+};
+
+BUG_：在调试的过程中，发现屏幕在休眠后，屏幕发白，背光没关闭，最后发现platform-bklight-en-gpio背光使能脚没有添加上去
+
+&dsi_zs043_270p_video该节点在 kernel\arch\arm\boot\dts\qcom 路径下的 dsi-panel-zs043-270p-video.dtsi文件中定义（也就是上面使用parser.pl命令生成的dtsi文件）
+
+内容如下：
+
+&mdss_mdp {
+	dsi_zs043_270p_video: qcom,mdss_dsi_zs043_270p_video {
+		qcom,mdss-dsi-panel-name = "zs043 270p video mode dsi panel";
+		qcom,mdss-dsi-panel-controller = <&mdss_dsi0>;
+		qcom,mdss-dsi-panel-type = "dsi_video_mode";
+		qcom,mdss-dsi-panel-destination = "display_1";
+		qcom,mdss-dsi-panel-framerate = <60>;
+		qcom,mdss-dsi-virtual-channel-id = <0>;
+		qcom,mdss-dsi-stream = <0>;
+		qcom,mdss-dsi-panel-width = <480>;
+		qcom,mdss-dsi-panel-height = <272>;
+		qcom,mdss-dsi-h-front-porch = <8>;
+		qcom,mdss-dsi-h-back-porch = <43>;
+		qcom,mdss-dsi-h-pulse-width = <4>;
+		qcom,mdss-dsi-h-sync-skew = <0>;
+		qcom,mdss-dsi-v-back-porch = <12>;
+		qcom,mdss-dsi-v-front-porch = <8>;
+		qcom,mdss-dsi-v-pulse-width = <4>;
+		qcom,mdss-dsi-h-left-border = <0>;
+		qcom,mdss-dsi-h-right-border = <0>;
+		qcom,mdss-dsi-v-top-border = <0>;
+		qcom,mdss-dsi-v-bottom-border = <0>;
+		qcom,mdss-dsi-bpp = <24>;
+		qcom,mdss-dsi-color-order = "rgb_swap_rgb";
+		qcom,mdss-dsi-underflow-color = <0xff>;
+		qcom,mdss-dsi-border-color = <0>;
+		qcom,cont-splash-enabled;
+		qcom,mdss-dsi-on-command = [29 01 00 00 00 00 02 7A C1
+			29 01 00 00 00 00 02 20 E0
+			29 01 00 00 00 00 02 21 10
+			29 01 00 00 00 00 02 22 11
+			29 01 00 00 00 00 02 23 08
+			29 01 00 00 00 00 02 24 04
+			29 01 00 00 00 00 02 25 2B
+			29 01 00 00 00 00 02 26 00
+			29 01 00 00 00 00 02 27 08
+			29 01 00 00 00 00 02 28 04
+			29 01 00 00 00 00 02 29 0C
+			29 01 00 00 00 00 02 34 80
+			29 01 00 00 00 00 02 86 29
+			29 01 00 00 00 00 02 B5 A0
+			29 01 00 00 00 00 02 5C FF
+			29 01 00 00 00 00 02 2A 01
+			29 01 00 00 00 00 02 56 90
+			29 01 00 00 00 00 02 6B 71
+			29 01 00 00 00 00 02 69 0C
+			29 01 00 00 00 00 02 10 40
+			29 01 00 00 00 00 02 11 88
+			29 01 00 00 00 00 02 B6 20
+			29 01 00 00 00 00 02 51 20
+			29 01 00 00 00 00 02 09 10
+			05 01 00 00 78 00 02 11 00
+			05 01 00 00 14 00 02 29 00];
+		qcom,mdss-dsi-off-command = [05 01 00 00 00 00 02 28 00
+					05 01 00 00 00 00 02 10 00];
+		qcom,mdss-dsi-on-command-state = "dsi_lp_mode";
+		qcom,mdss-dsi-off-command-state = "dsi_hs_mode";
+		qcom,mdss-dsi-h-sync-pulse = <1>;
+		qcom,mdss-dsi-traffic-mode = "burst_mode";
+		qcom,mdss-dsi-lane-map = "lane_map_0123";
+		qcom,mdss-dsi-bllp-eof-power-mode;
+		qcom,mdss-dsi-bllp-power-mode;
+		qcom,mdss-dsi-lane-0-state;
+		qcom,mdss-dsi-lane-1-state;
+		qcom,mdss-dsi-panel-timings = [37 0a 04 00 22 26 08 0e 05 03 04 00];
+		qcom,mdss-dsi-t-clk-post = <0x05>;
+		qcom,mdss-dsi-t-clk-pre = <0x0f>;
+		qcom,mdss-dsi-bl-min-level = <1>;
+		qcom,mdss-dsi-bl-max-level = <4095>;
+		qcom,mdss-dsi-dma-trigger = "trigger_sw";
+		qcom,mdss-dsi-mdp-trigger = "none";
+        qcom,mdss-dsi-bl-pmic-control-type = "bl_ctrl_pwm";     //背光控制方式
+        qcom,mdss-dsi-pwm-gpio = <&pm8909_mpps 2 0>;			//pwm输出引脚
+        qcom,mdss-dsi-bl-pmic-pwm-frequency = <100>;			//pwm输出频率
+        qcom,mdss-dsi-bl-pmic-bank-select = <0>;
+		//qcom,mdss-dsi-bl-pmic-control-type = "bl_ctrl_wled";
+		qcom,mdss-dsi-reset-sequence = <1 20>, <0 20>, <1 20>;  //复位时序，1表示高电平，0表示低电平，20表示延时20毫秒
+	};
+};
+
+BUG_2:在开机过程中发现，系统进入开机动画时屏幕背光会闪烁，
+原因：在kernel里设置的默认背光值太小
+
+在Z:\phy\sdk\qualcomm\kernel\drivers\video\msm\mdss\mdss_fb.c中
+
+static struct led_classdev backlight_led = {
+	.name           = "lcd-backlight",
+	.brightness     = 180/*MDSS_MAX_BL_BRIGHTNESS / 2*/,   //默认背光值
+	.brightness_set = mdss_fb_set_bl_brightness,           //背光设置函数
+	.max_brightness = MDSS_MAX_BL_BRIGHTNESS,				//kernel里背光的最大值
+};
+
+=====================================================================================
+扩展：背光的转换
+
+Z:\phy\sdk\qualcomm\kernel\drivers\video\msm\mdss\mdss_fb.c
+static void mdss_fb_set_bl_brightness(struct led_classdev *led_cdev,
+				      enum led_brightness value)
+{
+	struct msm_fb_data_type *mfd = dev_get_drvdata(led_cdev->dev->parent);
+	int bl_lvl;
+
+	if (mfd->boot_notification_led) {
+		led_trigger_event(mfd->boot_notification_led, 0);
+		mfd->boot_notification_led = NULL;
+	}
+
+	if (value > mfd->panel_info->brightness_max)
+		value = mfd->panel_info->brightness_max;
+
+	/* This maps android backlight level 0 to 255 into
+	   driver backlight level 0 to bl_max with rounding */
+	MDSS_BRIGHT_TO_BL(bl_lvl, value, mfd->panel_info->bl_max,   //mfd->panel_info->bl_max值为4095
+				mfd->panel_info->brightness_max);				//mfd->panel_info->brightness_max值为255
+
+	//bl_lvl = mfd->panel_info->bl_max - bl_lvl;
+	if (!bl_lvl && value)
+		bl_lvl = 1;
+
+	if (!IS_CALIB_MODE_BL(mfd) && (!mfd->ext_bl_ctrl || !value ||
+							!mfd->bl_level)) {
+		mutex_lock(&mfd->bl_lock);
+		mdss_fb_set_backlight(mfd, bl_lvl);
+		mutex_unlock(&mfd->bl_lock);
+	}
+}
+
+\\192.168.0.107\sxcompany-work\phy\sdk\qualcomm\kernel\drivers\video\msm\mdss\mdss_fb.h
+
+
+#define MDSS_BRIGHT_TO_BL(out, v, bl_max, max_bright) do {\
+					out = (2 * (v) * (bl_max) + max_bright)\
+					/ (2 * max_bright);\
+					} while (0)

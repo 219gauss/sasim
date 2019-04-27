@@ -1,0 +1,7 @@
+
+
+在文件中device\qcom\msm8909\overlay\frameworks\base\packages\SettingsProvider\res\values\defaults.xml
+
+    <integer name="def_screen_brightness">180</integer>      //设置默认背光
+    <bool name="def_lockscreen_disabled">true</bool>         //设置不锁屏
+

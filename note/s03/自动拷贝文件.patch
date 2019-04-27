@@ -1,0 +1,25 @@
+
+将文件拷贝到out目录下，但不能靠别apk文件，
+
+Z:\phy\sdk\qualcomm\device\qcom\msm8909\msm8909.mk
+
+PRODUCT_COPY_FILES += device/qcom/msm8909/SN7326_key_board.kl:system/usr/keylayout/SN7326_key_board.kl
+
+==============================================================
+添加应用层读写设备节点的权限
+
+1，配置内核宏
+./kernel/arch/arm/configs/msm8909_defconfig:595:CONFIG_SECURITY_SELINUX=y
+
+2，修改kernel_cmdline参数
+添加一项
+BOARD_KERNEL_CMDLINE := androidboot.selinux=permissive
+
+查看设备的selinux模式
+
+getenforce
+
+SElinux有3中模式
+enforcing:强制模式，代表 SELinux 运作中，且已经正确的开始限制 domain/type 了；
+permissive:宽容模式：代表 SELinux 运作中，不过仅会有警告讯息并不会实际限制 domain/type 的存取。这种模式可以运来作为 SELinux 的 debug 之用；
+disable:关闭，SELinux 并没有实际运作
