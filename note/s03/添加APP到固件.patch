@@ -1,17 +1,28 @@
 
-添加APP到system中，编译时将制定的APP打包到system.img中
+
+添加vendor\qcom\proprietary\qrdplus\China\ChinaTelecom\apps\AutoRegistration\到system中，
+编译时将制定的APP打包到system.img中
 
 在Z:\phy\sdk\qualcomm\device\qcom\msm8909\msm8909.mk文件中
 
-#ANT+ stack
-PRODUCT_PACKAGES += \
-AntHalService \
-libantradio \
-antradio_app \
-+AutoRegistration
+	#ANT+ stack
+	PRODUCT_PACKAGES += \
+	...
+	antradio_app \
+	AutoRegistration
 
 
 将要添加的APP名添加到PRODUCT_PACKAGES下
 
+结果发现apk被添加到system中，并没有被安装
+修改LOCAL_MODULE_PATH，将apk放置到system/app中，系统会自动安装apk，（最后发现该apk是个进程）
 
+	@@ -12,5 +12,6 @@ LOCAL_PACKAGE_NAME := AutoRegistration
+	 LOCAL_CERTIFICATE := platform
+	 
+	 # This will install the file in /system/vendor/ChinaTelecom
+	-LOCAL_MODULE_PATH := $(TARGET_OUT)/vendor/ChinaTelecom/system/app
+	+#LOCAL_MODULE_PATH := $(TARGET_OUT)/vendor/ChinaTelecom/system/app
+	+LOCAL_MODULE_PATH := $(TARGET_OUT)/app
+	 include $(BUILD_PACKAGE)
 

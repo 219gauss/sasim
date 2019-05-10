@@ -1,0 +1,8 @@
+
+在机器改为强制横屏后，发现短信APP在接收短信时出现文字偏离短信框的现象
+
+解决：
+Z:\phy\sdk\qualcomm\packages\apps\Mms\res\values\dimens.xml
+
+    <dimen name="message_item_text_padding_left_right">40dip</dimen> //文字的左右距离
+    <dimen name="message_item_bubble_max_width">350dip</dimen>		//短信框的宽度

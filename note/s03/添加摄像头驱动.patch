@@ -1,5 +1,84 @@
 
-添加gc2145摄像头驱动
+添加gc2145摄像头驱动，
+
+kernel部分：
+
+将摄像头驱动移植到如下路径：
+gc2145_8909.c gc2145_8909.h
+kernel\drivers\media\platform\msm\camera_v2\sensor
+
+修改当前目录的Makefile：
+obj-$(CONFIG_GC2145_8909) += gc2145_8909.o
 
 
+修改配置文件
+kernel\arch\arm\configs\msm8909_defconfig
+CONFIG_GC2145_8909=y
 
+
+修改dts文件
+arch/arm/boot/dts/qcom/msm8909-camera-sensor-mtp.dtsi
+
+
+qcom,camera@60 {
++               compatible = "qcom,gc2145_8909";
++               reg = <0x60 0x0>;
++               qcom,slave-id = <0x78 0xf0 0x2145>;
++               qcom,csiphy-sd-index = <0>;
++               qcom,csid-sd-index = <0>;
++               qcom,mount-angle = <0>;
++               qcom,sensor-name = "gc2145_8909";
++               cam_vdig-supply = <&pm8909_l2>;
++               cam_vana-supply = <&pm8909_l17>;
++               cam_vio-supply = <&pm8909_l6>;
++               cam_vaf-supply = <&pm8909_l10>;
++               qcom,cam-vreg-name = "cam_vdig", "cam_vio", "cam_vana",
++                                                       "cam_vaf";
++               qcom,cam-custom-vreg-name = "cam_vdig", "cam_vio", "cam_vana",
++                                                       "cam_vaf";
++               qcom,cam-vreg-type = <0 1 0 0>;
++               qcom,cam-vreg-min-voltage = <1200000 0 2850000 0>;
++               qcom,cam-vreg-max-voltage = <1200000 0 2850000 0>;
++               qcom,cam-vreg-op-mode = <200000 0 80000 100000>;
++               pinctrl-names = "cam_default", "cam_suspend";
++               pinctrl-0 = <&cam_sensor_mclk1_default &cam_sensor_front_default>;
++               pinctrl-1 = <&cam_sensor_mclk1_sleep &cam_sensor_front_sleep>;
++               gpios = <&msm_gpio 27 0>,
++                       <&msm_gpio 28 0>,
++                       <&msm_gpio 33 0>;
++               qcom,gpio-reset = <1>;
++               qcom,gpio-standby = <2>;
++               qcom,gpio-req-tbl-num = <0 1 2 >;
++               qcom,gpio-req-tbl-flags = <1 0 0 >;
++               qcom,gpio-req-tbl-label = "CAMIF_MCLK",
++                               "CAM_RESET1",
++                               "CAM_STANDBY";
++               qcom,csi-lane-assign = <0x0004>;
++               qcom,csi-lane-mask = <0x18>;
++               qcom,sensor-position = <1>;
++               qcom,sensor-mode = <1>;
++               qcom,cci-master = <0>;
++               status = "ok";
++               clocks = <&clock_gcc clk_mclk1_clk_src>,
++                               <&clock_gcc clk_gcc_camss_mclk1_clk>;
++               clock-names = "cam_src_clk", "cam_clk";
++       };
+
+vendor部分：
+将摄像头驱动添加到该路径下：
+vendor\qcom\proprietary\mm-camera\mm-camera2\media-controller\modules\sensors\sensor_libs
+
+添加该摄像头型号
+mm-camera/mm-camera2/media-controller/modules/sensors/module/sensor_init.c
+
+@@ -26,9 +26,7 @@
+   "ov8825",
+ #elif defined(MSM8909_SENSORS)
+ #define BOARD_SENSORS \
+-  "ov5675", \
+-  "gc5024", \
+-  "ov5648_q5v22e",
++  "gc2145_8909",
+ #else
+ #define BOARD_SENSORS \
+   "imx134", \

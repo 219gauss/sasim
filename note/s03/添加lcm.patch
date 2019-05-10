@@ -9,6 +9,7 @@ perl parser.pl panel_zs043_270p_video.xml panel
 
 1）将h文件添加到
 bootable\bootloader\lk\dev\gcdb\display\include路径下
+Z:\phy\sdk\qualcomm\bootable\bootloader\lk\target\msm8909\oem_panel.c
 
 编译lk ： make aboot -j8
 
@@ -22,6 +23,14 @@ bootable\bootloader\lk\dev\gcdb\display\include路径下
 在kernel\arch\arm\boot\dts\qcom路径下，修改msm8909-mtp.dtsi文件
 
 修改该节点：
+
+&dsi_zs043_270p_video {
+    qcom,mdss-dsi-bl-pmic-control-type = "bl_ctrl_pwm";
+    qcom,mdss-dsi-bl-pmic-pwm-frequency = <100>;
+    qcom,mdss-dsi-bl-pmic-bank-select = <0>;
+    qcom,mdss-dsi-pwm-gpio = <&pm8909_mpps 2 0>;
+    qcom,cont-splash-enabled;
+};
 
 &mdss_dsi0 {
 	qcom,dsi-pref-prim-pan = <&dsi_zs043_270p_video>;     指定lcm名字

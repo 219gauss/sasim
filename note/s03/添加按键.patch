@@ -260,3 +260,18 @@ To make these errors go away, you have two choices:
 
 
 
+修改：将left键换成删除键
+
+1，在dts里将left按键对应的坐标的键值替换成删除键的键值
+
+		linux,keymap = <0x000001ed
+				...
+				0x0301000e     //删除键爱你的键值为14
+
+2，修改kl文件，这里我们自定义了一个
+
+	...
+	key 14    DEL       //DEL对应android上层键值表的值，如果上层没有，要自己添加
+	...
+
+发现：在添加键值到kl文件中时，该键值如果是原先input.h中存在的，可以不用加到kl中，只要在驱动中上报就可以了
