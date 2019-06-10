@@ -1,0 +1,19 @@
+在git merge提交时有时会出现要求填入提交原因
+
+Merge branch 'msm8909' into s03_with_auto
+
+#add bu pzp 
+repair wifi about statusbar and Settings different，
+repair the M1 to M4 and Rediel_key continuous down show BUG
+repair Dial_key down to dial show crash BUG   
+
+# Please enter a commit message to explain why this merge is necessary,
+# especially if it merges an updated upstream into a topic branch.
+#
+# Lines starting with '#' will be ignored, and an empty message aborts
+# the commit. 
+
+填写完后，发现不能退出，:wq没反应，此时按shift+x键再操作
+
+用git log查看出现的commit是 Merge branch 'msm8909' into s03_with_auto，并不是从之前代码合并过来时的提交
+此时要去看之前填写的提交信息，路径在仓库(出现合并信息的仓库)的.git目录下的MERGE_MSGes文件(我的是MERGE_MSGes;;;)
