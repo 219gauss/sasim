@@ -12,7 +12,7 @@
 
 		adb reboot bootloader
 		fastboot flash splash splash.img
-		fastboot reboo
+		fastboot reboot
 
 	4.1，或者把splash.img添加到刷机包里，修改rawprogram_unsparse.xml
 

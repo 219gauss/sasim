@@ -3,12 +3,15 @@
 
 struct operation {
     
-    void (*opstype[10])(int,int);
+    int (*opstype[10])(int,int);
+    int mData[10];	/*运算数据*/
+    int mRet;		/*运算结果*/
+    int mCount;
+    int moperationCount;
 };
 
-struct operation ops;
-
-void init(void (*opstype)(int,int));
-void use(void (*opstype)(int,int));
+void init(int (*opstype)(int,int));
+int use(int (*opstype)(int,int));
+void init_data(int data, ...);
 
 #endif

@@ -238,7 +238,63 @@ SIMCOM模块提交记录：
 									packages/apps/SnapdragonGallery	修复在骁龙图库编辑图片弹出的提示框不能取消的问题(BUG)
 									*/
 					23, 2019-11-12 /*
-									frameworks/base/			修复开机时出现的概率触摸卡死(使用了自己编写的Launcher)
+									frameworks/base/			修复开机时出现的概率触摸卡死(使用了自己编写的Launcher)(无效)
+									*/
+					24，2019-12-11	/*
+									device/qcom/common/			修复TP卡死问题
+									frameworks/base/			取消对拨号apk的操作，按下按键发出广播
+																取消上一个提交
+									kernel/						修复TP卡死问题
+									vendor/qcom/proprietary/	添加一个apn
+									*/
+					25，2019-12-12	/*
+									device/qcom/common/			兼容TP(修改节点权限)
+									frameworks/base/			跟换Launcher包名
+																修改一个语法错误
+									hardware/qcom/camera/		兼容TP(判断是否有摄像头)
+									kernel/						兼容TP(根据是否有摄像头调整TP方向)
+									*/
+					26，2019-12-19 /*
+									frameworks/base/			恢复手柄键对拨号apk的操作，取消按键音
+									*/
+					27, 2019-12-25 /*
+									device/qcom/msm8909/		增加壁纸apk
+									packages/apps/Contacts/		优化联系人选择4G/VOIP拨号
+									packages/apps/ContactsCommon/修改联系人选项高度
+									packages/apps/WallpaperPicker/增加默认壁纸
+									*/
+					28，2019-12-25 /*
+									返回/删除键(M4)改为快捷拨号4键
+									frameworks/base/
+									packages/apps/Dialer/
+									packages/apps/Settings/
+									*/
+					29，2019-12-28 /*
+									device/qcom/common/			温度节点，手柄节点处理
+									frameworks/base/			修改默认壁纸
+									hardware/qcom/sensors/		增加温度sensor
+									kernel/						手柄兼容gpio99口，上报温度sensor数据
+									packages/apps/WallpaperPicker/修改壁纸
+									vendor/qcom/proprietary/	去掉没有SIM卡提示
+									*/
+					30，2019-12-30 /*
+									packages/apps/DeskClock/	修改时钟小部件字体大小
+									*/
+					31，2020-01-09 /*
+									frameworks/base/			手柄和按键接听时发送广播(接听并关闭led灯)
+																增加免提键的挂断功能
+									packages/apps/Dialer/		接收广播(接听并关闭led灯)
+									packages/apps/PhoneCommon/	修改拨号盘的字体大小
+									vendor/qcom/proprietary/	更换开机动画
+									*/
+					32, 2020-01-10 /*
+									packages/apps/Dialer/		4G通话时默认打开拨号盘
+									*/
+					31, 2020-01-10 /*
+									packages/apps/Dialer/		优化通话界面布局
+									*/
+					32, 2020-01-11 /*
+									frameworks/base/			设置4G通话声音最大
 									*/
 
 	分支：s03_with_ethernet_ch /*带以太网2019-08-31*/
@@ -292,8 +348,64 @@ SIMCOM模块提交记录：
 					8, 2019-11-05 /*
 									packages/apps/SnapdragonGallery	修复在骁龙图库编辑图片弹出的提示框不能取消的问题(BUG)
 									*/
-					9, 2019-11-12 /*
+					9, 2019-11-12 /*已撤销
 									frameworks/base/			修复开机时出现的概率触摸卡死(使用了自己编写的Launcher)
+									*/
+					10，2019-12-11	/*
+									device/qcom/common/			修复TP卡死问题
+									kernel/						修复TP卡死问题
+									*/
+					11，2019-12-12	/*
+									device/qcom/common/			兼容TP(修改节点权限)
+									hardware/qcom/camera/		兼容TP(判断是否有摄像头)
+									kernel/						兼容TP(根据是否有摄像头调整TP方向)
+									*/
+					12，2019-12-28 /*(合并s03_with_auto分支：12-25,12-28)
+									device/qcom/common/
+									device/qcom/msm8909/
+									frameworks/base/
+									hardware/qcom/sensors/
+									kernel/
+									packages/apps/ContactsCommon/
+									packages/apps/Dialer/
+									packages/apps/Settings/
+									packages/apps/WallpaperPicker/
+									*/
+					12，2019-12-28 /*
+									frameworks/base/			4G的Launcher更换包名
+									*/
+					13，2019-12-30 /*
+									packages/apps/DeskClock/	修改时钟小部件字体大小
+									*/
+					14，2019-12-31 /*
+									frameworks/base/			更换默认壁纸
+																按键功能优化
+									packages/apps/Dialer/		增加快捷拨号4
+																修复退出设置播出声音BUG
+									*/
+					15，2020-01-04 /*
+									packages/apps/Dialer/		修复光标位置不对的问题
+									*/
+					16，2020-01-06 /*
+									frameworks/base/			增加免提键的挂断功能
+									packages/apps/PhoneCommon/	修改拨号盘的字体大小
+									*/
+					17，2020-01-07 /*
+									frameworks/base/			手柄和按键接听时发送广播(接听并关闭led灯)
+									packages/apps/Dialer/		接收广播(接听并关闭led灯)
+									vendor/qcom/proprietary/	更换开机动画
+									*/
+					18, 2020-01-10 /*
+									packages/apps/Dialer/		4G通话时默认打开拨号盘
+									*/
+					19, 2020-01-10 /*
+									packages/apps/Dialer/		优化通话界面布局
+									*/
+					20, 2020-02-17 /*
+									packages/apps/Dialer/		修复播放tone音时休眠唤醒不播放问题(修复退出设置播出声音BUG 引起的)
+									*/
+					21, 2020-02-17 /*
+									packages/apps/Dialer/		优化连续按免提键概率出现不能关闭apk问题
 									*/
 
 
@@ -323,8 +435,12 @@ SIMCOM模块提交记录：
 					4, 2019-11-05 /*
 									packages/apps/SnapdragonGallery	修复在骁龙图库编辑图片弹出的提示框不能取消的问题(BUG)
 									*/
-					5, 2019-11-12 /*
+					5, 2019-11-12 /*已撤销
 									frameworks/base/			修复开机时出现的概率触摸卡死(使用了自己编写的Launcher)
+									*/
+					6，2019-12-11	/*
+									device/qcom/common/			修复TP卡死问题
+									kernel/						修复TP卡死问题
 									*/
 
 	分支：s03_VOIP_army /*同步分支s03_VOIP*/
@@ -336,22 +452,25 @@ SIMCOM模块提交记录：
 									frameworks/base/			修改按键的一个语法错误
 									*/
 					4, 2019-11-04 /*临时提交
-									build/
-									device/qcom/common/
-									device/qcom/msm8909/
-									frameworks/base/
-									kernel/
-									packages/apps/Calendar/
-									packages/apps/Dialer/
-									packages/apps/Launcher3/
-									packages/apps/Settings/
-									vendor/qcom/proprietary/
+									build/					(提交)
+									device/qcom/msm8909/	(提交)
+									frameworks/base/		(提交)
+									packages/apps/Dialer/	(提交)
+									packages/apps/Settings/	(提交)
+									vendor/qcom/proprietary/(提交)
 									*/
 					5, 2019-11-05 /*
 									packages/apps/SnapdragonGallery	修复在骁龙图库编辑图片弹出的提示框不能取消的问题(BUG)
 									*/
-					6, 2019-11-12 /*
+					6, 2019-11-12 /*已撤销
 									frameworks/base/			修复开机时出现的概率触摸卡死(使用了自己编写的Launcher)
+									*/
+					7,2019-11-14 /*
+									vendor/qcom/proprietary/	修改开机动画
+									*/
+					8，2019-12-11	/*
+									device/qcom/common/			修复TP卡死问题
+									kernel/						修复TP卡死问题
 									*/
 
 	
@@ -365,7 +484,7 @@ SIMCOM模块提交记录：
 
 
 
-8909旧模块提交记录：
+8909旧模块提交记录：(s03_in分支)
 1，2019-05-07
 
 2，2019-05-16：/*
@@ -408,7 +527,18 @@ SIMCOM模块提交记录：
 9，2019-09-20 /*(合并msm8909分支2019-09-06的补丁)
 
 				*/
-
+10,2019-11-14 /*
+				(合并s03_with_auto分支2019-10-08的补丁)
+				*/
+11,2019-11-14 /*
+				(合并s03_with_auto分支2019-10-09的补丁)
+				*/
+12,2019-11-14 /*
+				(合并s03_with_auto分支2019-10-10的补丁)
+				*/
+13,2019-11-14 /*
+				(合并s03_with_auto分支2019-10-14的补丁)
+				*/
 
 
 	分支：s03_in_with_ethernet /*合并之前的补丁*/
@@ -422,7 +552,89 @@ SIMCOM模块提交记录：
 						修改设置-->声音中通话声音的图标
 					*/
 
-	分支：s03_test /*用于功能测试*/
+
+	分支：s03_VOIP /*合并s03_in分支(日期：2019-11-14)*/
+
+			1，2019-11-14 /*合并s03_in分支(日期：2019-11-14)*/
+
+			2, 2019-11-14 /*
+							(合并s03_VOIP分支2019-10-14的补丁) s03_VOIP分支:另一代码分支
+							*/
+			3, 2019-11-14 /*
+							(合并s03_VOIP分支2019-10-21的补丁) s03_VOIP分支:另一代码分支
+							*/
+			4, 2019-11-14 /*
+							(合并s03_VOIP分支2019-10-24的补丁) s03_VOIP分支:另一代码分支
+							*/
+			5, 2019-11-14 /*
+							(合并s03_VOIP分支2019-10-29的补丁) s03_VOIP分支:另一代码分支
+							*/
+			6, 2019-11-14 /*
+							(合并s03_VOIP分支2019-11-05的补丁) s03_VOIP分支:另一代码分支
+							*/
+			7, 2019-11-14 /*
+							(合并s03_VOIP分支2019-11-12的补丁) s03_VOIP分支:另一代码分支
+							*/
+
+	分支：s03_VOIP_army /*合并s03_VOIP分支(日期：2019-11-14)*/
+
+			1，2019-11-14 /*合并s03_in分支(日期：2019-11-14)*/
+
+			2, 2019-11-14 /*
+							(合并s03_VOIP_army分支2019-10-29的补丁) s03_VOIP_army分支:另一代码分支
+							*/
+			3, 2019-11-14 /*
+							(合并s03_VOIP_army分支2019-11-04的补丁) s03_VOIP_army分支:另一代码分支
+							*/
+			4, 2019-11-15 /*
+							增加百度输入法，谷歌浏览器，墨迹天气apk
+							*/
+			5, 2019-11-27 /*
+							增加网卡功能
+							*/
+			6, 2019-11-27 /*
+							优化dm9051驱动（网卡网速）
+							去除拨号apk
+							*/
+			7, 2019-11-28 /*
+							 优化以太网使其默认开启
+							*/
+			8, 2019-11-28 /*
+							 添加VOIP Launcher，去除sim，流量功能
+							*/
+			9, 2019-12-02 /*
+							 移植mtk的以太网应用，去除设置更多选项的热点和移动网络等
+							 修改设备型号
+							*/
+			10, 2019-12-04 /*
+							 取消设置中的无线，手机，振动，短信，SIM卡字样
+							 去掉短信，音乐，视频，电子邮件，Chrome，录音机，文件管理，下载，墨迹天气，S03Test
+							 增加插入网线系统不进入深度休眠功能
+							 修复TP卡死问题
+							*/
+			11, 2019-12-05 /*
+							 增加来电led灯闪烁（吴凯）
+							 更新应用图标排列
+							 修复视频会议手柄奔溃BUG
+							*/
+			12, 2019-12-10 /*
+							去除以太网和noSIM图标(SignalClusterView.java)
+							去除以太网快捷方式设置--->packages/apps/Settings/AndroidManifest.xml
+							去除wifi快捷方式设置--->packages/apps/Settings/res/xml/shortcuts.xml
+							去除主屏幕设置apk(Protips)
+							*/
+			12, 2019-12-11 /*
+							统一手柄接口(陈工)
+							*/
+			13, 2019-12-11 /*
+							撤销之前的TP卡死修改
+							*/
+			14, 2019-12-13 /*
+							拔插网线状态栏显示图标
+							*/
+			15，2020-01-03 /*
+							VOIP的apk更新
+							*/
 
 
 
